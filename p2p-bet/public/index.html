@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2022.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    span.s1 {font: 12.0px 'Apple Color Emoji'}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;P2P Bitcoin Bet&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input, button { margin: 5px 0; padding: 8px; width: 100%; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.bet-box { border: 1px solid #ccc; padding: 15px; margin-top: 20px; border-radius: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.highlight { background: #f0f8ff; padding: 10px; border-radius: 5px; margin-top: 10px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.hidden { display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h1&gt;P2P Bitcoin Bet&lt;/h1&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Create Bet Form --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="create-bet" class="bet-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Create a Bet&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="nameA" placeholder="Your Name"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="terms" placeholder="Bet terms (e.g. Chiefs win Super Bowl)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="sats" placeholder="Amount (sats)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="addrA" placeholder="Your Lightning Address"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="createBet()"&gt;Create Bet&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Bet Details --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="bet-details" class="bet-box hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Bet Details&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;&lt;strong&gt;Creator:&lt;/strong&gt; &lt;span id="d-nameA"&gt;&lt;/span&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;&lt;strong&gt;Creator Lightning Address:&lt;/strong&gt; &lt;span id="d-addrA"&gt;&lt;/span&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;&lt;strong&gt;Original Bet Terms:&lt;/strong&gt; &lt;span id="d-terms"&gt;&lt;/span&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;&lt;strong&gt;Amount:&lt;/strong&gt; &lt;span id="d-sats"&gt;&lt;/span&gt; sats&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Second person input section --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="accept-section" class="hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Your Info&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="nameB" placeholder="Your Name"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="termsB" placeholder="Bet terms (optional)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="addrB" placeholder="Your Lightning Address"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button onclick="acceptBet()"&gt;Accept Bet&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="accepted-message" class="hidden highlight"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span><span class="s1">✅</span> Bet accepted! Share this link with your opponent:&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="share-link" readonly style="width: 80%;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button onclick="copyLink()"&gt;Copy Link&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="outcome-section" class="hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Decide Outcome&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="btn-won"&gt;I Won&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="btn-lost"&gt;I Lost&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="winner-message" class="hidden highlight"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let bet = {};</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let isCreator = false;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function saveBet() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>await fetch("/api/bet", {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>method: "POST",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>headers: { "Content-Type": "application/json" },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body: JSON.stringify(bet)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function loadBet() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const res = await fetch("/api/bet");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bet = await res.json();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function showBet() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>await loadBet();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("create-bet").classList.add("hidden");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("bet-details").classList.remove("hidden");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("d-terms").textContent = bet.terms;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("d-sats").textContent = bet.sats;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("d-nameA").textContent = bet.nameA;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("d-addrA").textContent = bet.addrA;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (bet.accepted) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("accept-section").classList.add("hidden");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("accepted-message").classList.remove("hidden");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("outcome-section").classList.remove("hidden");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("share-link").value = window.location.href;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else if (!isCreator) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("accept-section").classList.remove("hidden");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("termsB").value = bet.terms;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function createBet() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bet = {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameA: document.getElementById("nameA").value,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>terms: document.getElementById("terms").value,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sats: document.getElementById("sats").value,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>addrA: document.getElementById("addrA").value,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameB: "",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>addrB: "",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>termsB: "",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>accepted: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>winner: ""</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p1"><span class="Apple-converted-space">      </span>isCreator = true;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>await saveBet();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>showBet();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("accepted-message").classList.remove("hidden");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("share-link").value = window.location.href;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function acceptBet() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bet.nameB = document.getElementById("nameB").value;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bet.addrB = document.getElementById("addrB").value;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bet.termsB = document.getElementById("termsB").value;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bet.accepted = true;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>await saveBet();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>alert("Bet accepted!");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>showBet();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function iWon() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const winnerName = prompt("Enter your name to confirm:");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if(winnerName === bet.nameA) bet.winner = "A";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>else if(winnerName === bet.nameB) bet.winner = "B";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>saveBet();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>displayWinner();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function iLost() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const loserName = prompt("Enter your name to confirm:");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if(loserName === bet.nameA) bet.winner = "B";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>else if(loserName === bet.nameB) bet.winner = "A";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>saveBet();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>displayWinner();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function displayWinner() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const winnerAddr = bet.winner === "A" ? bet.addrA : bet.addrB;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const winnerName = bet.winner === "A" ? bet.nameA : bet.nameB;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const loserAddr = bet.winner === "A" ? bet.addrB : bet.addrA;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("winner-message").classList.remove("hidden");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("winner-message").innerHTML =</p>
+<p class="p1"><span class="Apple-converted-space">        </span>`&lt;strong&gt;${winnerName} won!&lt;/strong&gt;&lt;br&gt;` +</p>
+<p class="p1"><span class="Apple-converted-space">        </span>`If you lost, pay sats to: ${loserAddr}`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function copyLink() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const linkInput = document.getElementById("share-link");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>linkInput.select();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>linkInput.setSelectionRange(0, 99999);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>navigator.clipboard.writeText(linkInput.value).then(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>alert("Link copied!");</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Event listeners</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("btn-won").addEventListener("click", iWon);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("btn-lost").addEventListener("click", iLost);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Auto refresh for dynamic updates</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setInterval(showBet, 1000);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Initial load</p>
+<p class="p1"><span class="Apple-converted-space">    </span>showBet();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
