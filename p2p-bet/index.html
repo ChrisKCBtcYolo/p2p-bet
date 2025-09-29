@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2022.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 20.2px; font: 14.7px Arial; color: #000000; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #000000; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+    span.s2 {font: 14.7px 'Apple Color Emoji'; font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;meta charset="UTF-8"&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;title&gt;P2P Bitcoin Bet&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;style&gt;</span></p>
+<p class="p1"><span class="s1">    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }</span></p>
+<p class="p1"><span class="s1">    .hidden { display: none; }</span></p>
+<p class="p1"><span class="s1">    input, button { margin: 5px 0; padding: 8px; width: 100%; }</span></p>
+<p class="p1"><span class="s1">    .bet-box { border: 1px solid #ccc; padding: 15px; margin-top: 20px; border-radius: 8px; }</span></p>
+<p class="p1"><span class="s1">    .highlight { background: #f0f8ff; padding: 10px; border-radius: 5px; margin-top: 10px; }</span></p>
+<p class="p1"><span class="s1">  &lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;h1&gt;P2P Bitcoin Bet&lt;/h1&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">  &lt;!-- Create Bet Form --&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;div id="create-bet" class="bet-box"&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;h2&gt;Create a Bet&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;input type="text" id="nameA" placeholder="Your Name"&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;input type="text" id="terms" placeholder="Bet terms (e.g. Chiefs win Super Bowl)"&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;input type="number" id="sats" placeholder="Amount (sats)"&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;input type="text" id="addrA" placeholder="Your Lightning Address"&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;button onclick="createBet()"&gt;Create Bet&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">  &lt;!-- Bet Info Display + Share Link --&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;div id="bet-info" class="bet-box hidden"&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;h2&gt;Bet Info&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;p&gt;&lt;strong&gt;Creator:&lt;/strong&gt; &lt;span id="d-nameA"&gt;&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;p&gt;&lt;strong&gt;Terms:&lt;/strong&gt; &lt;span id="d-terms"&gt;&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;p&gt;&lt;strong&gt;Amount:&lt;/strong&gt; &lt;span id="d-sats"&gt;&lt;/span&gt; sats&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;p&gt;&lt;strong&gt;Lightning Address:&lt;/strong&gt; &lt;span id="d-addrA"&gt;&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    &lt;h3&gt;Share this link with your opponent&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;input type="text" id="share-link" readonly style="width: 80%;"&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;button onclick="copyLink()"&gt;Copy Link&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;!-- Accept Bet Form for Person B --&gt;</span></p>
+<p class="p1"><span class="s1">&lt;div id="accept-bet" class="bet-box hidden"&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;h2&gt;Accept Bet&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;p&gt;&lt;strong&gt;Creator:&lt;/strong&gt; &lt;span id="b-nameA"&gt;&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;p&gt;&lt;strong&gt;Terms:&lt;/strong&gt; &lt;span id="b-terms"&gt;&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;p&gt;&lt;strong&gt;Amount:&lt;/strong&gt; &lt;span id="b-sats"&gt;&lt;/span&gt; sats&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;p&gt;&lt;strong&gt;Creator Lightning Address:&lt;/strong&gt; &lt;span id="b-addrA"&gt;&lt;/span&gt;&lt;/p&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">  &lt;input type="text" id="nameB" placeholder="Your Name"&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;input type="text" id="termsB" placeholder="Your Bet Terms (optional)"&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;input type="text" id="addrB" placeholder="Your Lightning Address"&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;button onclick="acceptBet()"&gt;Accept Bet&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">  &lt;!-- Outcome Section --&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;div id="outcome-section" class="bet-box hidden"&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;h3&gt;Decide Outcome&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;button id="btn-won"&gt;I Won&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;button id="btn-lost"&gt;I Lost&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">    &lt;div id="winner-message" class="hidden highlight"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1">  &lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">  &lt;script&gt;</span></p>
+<p class="p1"><span class="s1">    let bet = {};</span></p>
+<p class="p1"><span class="s1">    let currentUser = "";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    function saveBet() { localStorage.setItem("betData", JSON.stringify(bet)); }</span></p>
+<p class="p1"><span class="s1">    function loadBet() { const data = localStorage.getItem("betData"); if(data) bet = JSON.parse(data); }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    function createBet() {</span></p>
+<p class="p1"><span class="s1">      bet = {</span></p>
+<p class="p1"><span class="s1">        nameA: document.getElementById("nameA").value,</span></p>
+<p class="p1"><span class="s1">        terms: document.getElementById("terms").value,</span></p>
+<p class="p1"><span class="s1">        sats: document.getElementById("sats").value,</span></p>
+<p class="p1"><span class="s1">        addrA: document.getElementById("addrA").value,</span></p>
+<p class="p1"><span class="s1">        nameB: "",</span></p>
+<p class="p1"><span class="s1">        addrB: "",</span></p>
+<p class="p1"><span class="s1">        accepted: false,</span></p>
+<p class="p1"><span class="s1">        winner: "",</span></p>
+<p class="p1"><span class="s1">        winnerAddr: ""</span></p>
+<p class="p1"><span class="s1">      };</span></p>
+<p class="p1"><span class="s1">      currentUser = bet.nameA;</span></p>
+<p class="p1"><span class="s1">      saveBet();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">      // Hide create button, show info and share link</span></p>
+<p class="p1"><span class="s1">      document.getElementById("create-bet").classList.add("hidden");</span></p>
+<p class="p1"><span class="s1">      document.getElementById("bet-info").classList.remove("hidden");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">      document.getElementById("d-nameA").textContent = bet.nameA;</span></p>
+<p class="p1"><span class="s1">      document.getElementById("d-terms").textContent = bet.terms;</span></p>
+<p class="p1"><span class="s1">      document.getElementById("d-sats").textContent = bet.sats;</span></p>
+<p class="p1"><span class="s1">      document.getElementById("d-addrA").textContent = bet.addrA;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">      const link = window.location.origin + window.location.pathname + "?bet=true";</span></p>
+<p class="p1"><span class="s1">      document.getElementById("share-link").value = link;</span></p>
+<p class="p1"><span class="s1">    }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    function acceptBet() {</span></p>
+<p class="p1"><span class="s1">      bet.nameB = document.getElementById("nameB").value;</span></p>
+<p class="p1"><span class="s1">      bet.addrB = document.getElementById("addrB").value;</span></p>
+<p class="p1"><span class="s1">      bet.accepted = true;</span></p>
+<p class="p1"><span class="s1">      currentUser = bet.nameB;</span></p>
+<p class="p1"><span class="s1">      saveBet();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">      document.getElementById("accept-bet").classList.add("hidden");</span></p>
+<p class="p1"><span class="s1">      document.getElementById("outcome-section").classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1">    }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    function iWon() {</span></p>
+<p class="p1"><span class="s1">      bet.winner = currentUser;</span></p>
+<p class="p1"><span class="s1">      bet.winnerAddr = (currentUser === bet.nameA) ? bet.addrA : bet.addrB;</span></p>
+<p class="p1"><span class="s1">      saveBet();</span></p>
+<p class="p1"><span class="s1">      showWinner();</span></p>
+<p class="p1"><span class="s1">    }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    function iLost() {</span></p>
+<p class="p1"><span class="s1">      bet.winner = (currentUser === bet.nameA) ? bet.nameB : bet.nameA;</span></p>
+<p class="p1"><span class="s1">      bet.winnerAddr = (currentUser === bet.nameA) ? bet.addrB : bet.addrA;</span></p>
+<p class="p1"><span class="s1">      saveBet();</span></p>
+<p class="p1"><span class="s1">      showWinner();</span></p>
+<p class="p1"><span class="s1">    }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    function showWinner() {</span></p>
+<p class="p1"><span class="s1">      document.getElementById("winner-message").classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1">      document.getElementById("winner-message").textContent =</span></p>
+<p class="p1"><span class="s1">        `</span><span class="s2">🏆</span><span class="s1"> Winner: ${bet.winner}! Receive ${bet.sats} sats at: ${bet.winnerAddr}`;</span></p>
+<p class="p1"><span class="s1">    }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    function copyLink() {</span></p>
+<p class="p1"><span class="s1">      const linkInput = document.getElementById("share-link");</span></p>
+<p class="p1"><span class="s1">      linkInput.select();</span></p>
+<p class="p1"><span class="s1">      linkInput.setSelectionRange(0, 99999);</span></p>
+<p class="p1"><span class="s1">      navigator.clipboard.writeText(linkInput.value).then(() =&gt; { alert("Link copied!"); });</span></p>
+<p class="p1"><span class="s1">    }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    function initPage() {</span></p>
+<p class="p1"><span class="s1">      loadBet();</span></p>
+<p class="p1"><span class="s1">      const params = new URLSearchParams(window.location.search);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">      if (params.has("bet") &amp;&amp; localStorage.getItem("betData")) {</span></p>
+<p class="p1"><span class="s1">        // Person B has not joined yet → show accept form</span></p>
+<p class="p1"><span class="s1">        if (!bet.accepted) {</span></p>
+<p class="p1"><span class="s1">          document.getElementById("create-bet").classList.add("hidden");</span></p>
+<p class="p1"><span class="s1">          document.getElementById("accept-bet").classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1">          document.getElementById("b-nameA").textContent = bet.nameA;</span></p>
+<p class="p1"><span class="s1">          document.getElementById("b-addrA").textContent = bet.addrA;</span></p>
+<p class="p1"><span class="s1">          document.getElementById("b-terms").textContent = bet.terms;</span></p>
+<p class="p1"><span class="s1">          document.getElementById("b-sats").textContent = bet.sats;</span></p>
+<p class="p1"><span class="s1">        } else {</span></p>
+<p class="p1"><span class="s1">          currentUser = bet.nameB; // assume B is using the link</span></p>
+<p class="p1"><span class="s1">          document.getElementById("outcome-section").classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1">          document.getElementById("bet-info").classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1">          if (bet.winner) showWinner();</span></p>
+<p class="p1"><span class="s1">        }</span></p>
+<p class="p1"><span class="s1">      }</span></p>
+<p class="p1"><span class="s1">    }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    document.getElementById("btn-won").addEventListener("click", iWon);</span></p>
+<p class="p1"><span class="s1">    document.getElementById("btn-lost").addEventListener("click", iLost);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    // Auto-refresh for dynamic updates</span></p>
+<p class="p1"><span class="s1">    setInterval(() =&gt; {</span></p>
+<p class="p1"><span class="s1">      const oldWinner = bet.winner;</span></p>
+<p class="p1"><span class="s1">      const oldAccepted = bet.accepted;</span></p>
+<p class="p1"><span class="s1">      loadBet();</span></p>
+<p class="p1"><span class="s1">      if (bet.winner !== oldWinner || bet.accepted !== oldAccepted) {</span></p>
+<p class="p1"><span class="s1">        if (bet.accepted &amp;&amp; !bet.winner) {</span></p>
+<p class="p1"><span class="s1">          document.getElementById("accept-bet").classList.add("hidden");</span></p>
+<p class="p1"><span class="s1">          document.getElementById("outcome-section").classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1">        }</span></p>
+<p class="p1"><span class="s1">        if (bet.winner) showWinner();</span></p>
+<p class="p1"><span class="s1">      }</span></p>
+<p class="p1"><span class="s1">    }, 1000);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">    initPage();</span></p>
+<p class="p1"><span class="s1">  &lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+</body>
+</html>
