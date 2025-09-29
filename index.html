@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>P2P Bitcoin Bet</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+    .hidden { display: none; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; }
+    .bet-box { border: 1px solid #ccc; padding: 15px; margin-top: 20px; border-radius: 8px; }
+    .highlight { background: #f0f8ff; padding: 10px; border-radius: 5px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>P2P Bitcoin Bet</h1>
+
+  <!-- Create Bet Form -->
+  <div id="create-bet" class="bet-box">
+    <h2>Create a Bet</h2>
+    <input type="text" id="nameA" placeholder="Your Name">
+    <input type="text" id="terms" placeholder="Bet terms (e.g. Chiefs win Super Bowl)">
+    <input type="number" id="sats" placeholder="Amount (sats)">
+    <input type="text" id="addrA" placeholder="Your Lightning Address">
+    <button onclick="createBet()">Create Bet</button>
+  </div>
+
+  <!-- Bet Info Display + Share Link -->
+  <div id="bet-info" class="bet-box hidden">
+    <h2>Bet Info</h2>
+    <p><strong>Creator:</strong> <span id="d-nameA"></span></p>
+    <p><strong>Terms:</strong> <span id="d-terms"></span></p>
+    <p><strong>Amount:</strong> <span id="d-sats"></span> sats</p>
+    <p><strong>Lightning Address:</strong> <span id="d-addrA"></span></p>
+
+    <h3>Share this link with your opponent</h3>
+    <input type="text" id="share-link" readonly style="width: 80%;">
+    <button onclick="copyLink()">Copy Link</button>
+  </div>
+
+<!-- Accept Bet Form for Person B -->
+<div id="accept-bet" class="bet-box hidden">
+  <h2>Accept Bet</h2>
+  <p><strong>Creator:</strong> <span id="b-nameA"></span></p>
+  <p><strong>Terms:</strong> <span id="b-terms"></span></p>
+  <p><strong>Amount:</strong> <span id="b-sats"></span> sats</p>
+  <p><strong>Creator Lightning Address:</strong> <span id="b-addrA"></span></p>
+
+  <input type="text" id="nameB" placeholder="Your Name">
+  <input type="text" id="termsB" placeholder="Your Bet Terms (optional)">
+  <input type="text" id="addrB" placeholder="Your Lightning Address">
+  <button onclick="acceptBet()">Accept Bet</button>
+</div>
+
+  <!-- Outcome Section -->
+  <div id="outcome-section" class="bet-box hidden">
+    <h3>Decide Outcome</h3>
+    <button id="btn-won">I Won</button>
+    <button id="btn-lost">I Lost</button>
+    <div id="winner-message" class="hidden highlight"></div>
+  </div>
+
+  <script>
+    let bet = {};
+    let currentUser = "";
+
+    function saveBet() { localStorage.setItem("betData", JSON.stringify(bet)); }
+    function loadBet() { const data = localStorage.getItem("betData"); if(data) bet = JSON.parse(data); }
+
+    function createBet() {
+      bet = {
+        nameA: document.getElementById("nameA").value,
+        terms: document.getElementById("terms").value,
+        sats: document.getElementById("sats").value,
+        addrA: document.getElementById("addrA").value,
+        nameB: "",
+        addrB: "",
+        accepted: false,
+        winner: "",
+        winnerAddr: ""
+      };
+      currentUser = bet.nameA;
+      saveBet();
+
+      // Hide create button, show info and share link
+      document.getElementById("create-bet").classList.add("hidden");
+      document.getElementById("bet-info").classList.remove("hidden");
+
+      document.getElementById("d-nameA").textContent = bet.nameA;
+      document.getElementById("d-terms").textContent = bet.terms;
+      document.getElementById("d-sats").textContent = bet.sats;
+      document.getElementById("d-addrA").textContent = bet.addrA;
+
+      const link = window.location.origin + window.location.pathname + "?bet=true";
+      document.getElementById("share-link").value = link;
+    }
+
+    function acceptBet() {
+      bet.nameB = document.getElementById("nameB").value;
+      bet.addrB = document.getElementById("addrB").value;
+      bet.accepted = true;
+      currentUser = bet.nameB;
+      saveBet();
+
+      document.getElementById("accept-bet").classList.add("hidden");
+      document.getElementById("outcome-section").classList.remove("hidden");
+    }
+
+    function iWon() {
+      bet.winner = currentUser;
+      bet.winnerAddr = (currentUser === bet.nameA) ? bet.addrA : bet.addrB;
+      saveBet();
+      showWinner();
+    }
+
+    function iLost() {
+      bet.winner = (currentUser === bet.nameA) ? bet.nameB : bet.nameA;
+      bet.winnerAddr = (currentUser === bet.nameA) ? bet.addrB : bet.addrA;
+      saveBet();
+      showWinner();
+    }
+
+    function showWinner() {
+      document.getElementById("winner-message").classList.remove("hidden");
+      document.getElementById("winner-message").textContent =
+        `🏆 Winner: ${bet.winner}! Receive ${bet.sats} sats at: ${bet.winnerAddr}`;
+    }
+
+    function copyLink() {
+      const linkInput = document.getElementById("share-link");
+      linkInput.select();
+      linkInput.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(linkInput.value).then(() => { alert("Link copied!"); });
+    }
+
+    function initPage() {
+      loadBet();
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.has("bet") && localStorage.getItem("betData")) {
+        // Person B has not joined yet → show accept form
+        if (!bet.accepted) {
+          document.getElementById("create-bet").classList.add("hidden");
+          document.getElementById("accept-bet").classList.remove("hidden");
+          document.getElementById("b-nameA").textContent = bet.nameA;
+          document.getElementById("b-addrA").textContent = bet.addrA;
+          document.getElementById("b-terms").textContent = bet.terms;
+          document.getElementById("b-sats").textContent = bet.sats;
+        } else {
+          currentUser = bet.nameB; // assume B is using the link
+          document.getElementById("outcome-section").classList.remove("hidden");
+          document.getElementById("bet-info").classList.remove("hidden");
+          if (bet.winner) showWinner();
+        }
+      }
+    }
+
+    document.getElementById("btn-won").addEventListener("click", iWon);
+    document.getElementById("btn-lost").addEventListener("click", iLost);
+
+    // Auto-refresh for dynamic updates
+    setInterval(() => {
+      const oldWinner = bet.winner;
+      const oldAccepted = bet.accepted;
+      loadBet();
+      if (bet.winner !== oldWinner || bet.accepted !== oldAccepted) {
+        if (bet.accepted && !bet.winner) {
+          document.getElementById("accept-bet").classList.add("hidden");
+          document.getElementById("outcome-section").classList.remove("hidden");
+        }
+        if (bet.winner) showWinner();
+      }
+    }, 1000);
+
+    initPage();
+  </script>
+</body>
+</html>
