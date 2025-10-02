@@ -60,144 +60,147 @@
   </div>
 
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getDatabase, ref, set, get, child, update, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
-  <script>
-    // 🔹 Replace this config with your Firebase project config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAsIg1JTz4PyNfCHWyZCzX-_94Uj_oEyZw",
-      authDomain: "p2pbet-59eff.firebaseapp.com",
-      databaseURL: "https://p2pbet-59eff-default-rtdb.firebaseio.com",
-      projectId: "p2pbet-59eff",
-      storageBucket: "p2pbet-59eff.firebasestorage.app",
-      messagingSenderId: "613932768243",
-      appId: "1:613932768243:web:a77df7469e9fee464d5086"
-      measurementId: "G-0E2L01X5LL"
+  // 🔹 Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAsIg1JTz4PyNfCHWyZCzX-_94Uj_oEyZw",
+    authDomain: "p2pbet-59eff.firebaseapp.com",
+    databaseURL: "https://p2pbet-59eff-default-rtdb.firebaseio.com",
+    projectId: "p2pbet-59eff",
+    storageBucket: "p2pbet-59eff.firebasestorage.app",
+    messagingSenderId: "613932768243",
+    appId: "1:613932768243:web:a77df7469e9fee464d5086",
+    measurementId: "G-0E2L01X5LL"
+  };
+
+  // 🔹 Initialize Firebase and Realtime Database
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // 🔹 Generate or read bet ID from URL
+  let betId = new URLSearchParams(window.location.search).get("bet");
+  if (!betId) {
+    betId = "bet-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
+    window.history.replaceState({}, "", "?bet=" + betId);
+  }
+  const dbRef = ref(db, "bets/" + betId);
+
+  let currentUser = "";
+
+  function createBet() {
+    const bet = {
+      nameA: document.getElementById("nameA").value,
+      terms: document.getElementById("terms").value,
+      sats: document.getElementById("sats").value,
+      addrA: document.getElementById("addrA").value,
+      nameB: "",
+      addrB: "",
+      accepted: false,
+      winner: "",
+      winnerAddr: "",
+      createdAt: Date.now()
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    currentUser = bet.nameA;
+    set(dbRef, bet);
 
-    // 🔹 Generate or read bet ID from URL
-    let betId = new URLSearchParams(window.location.search).get("bet");
-    if (!betId) {
-      betId = "bet-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
-      window.history.replaceState({}, "", "?bet=" + betId);
-    }
-    const dbRef = db.ref("bets/" + betId);
+    document.getElementById("create-bet").classList.add("hidden");
+    document.getElementById("bet-info").classList.remove("hidden");
 
-    let currentUser = "";
+    document.getElementById("d-nameA").textContent = bet.nameA;
+    document.getElementById("d-terms").textContent = bet.terms;
+    document.getElementById("d-sats").textContent = bet.sats;
+    document.getElementById("d-addrA").textContent = bet.addrA;
 
-    function createBet() {
-      const bet = {
-        nameA: document.getElementById("nameA").value,
-        terms: document.getElementById("terms").value,
-        sats: document.getElementById("sats").value,
-        addrA: document.getElementById("addrA").value,
-        nameB: "",
-        addrB: "",
-        accepted: false,
-        winner: "",
-        winnerAddr: "",
-        createdAt: Date.now()
-      };
-      currentUser = bet.nameA;
-      dbRef.set(bet);
+    const link = window.location.origin + window.location.pathname + "?bet=" + betId;
+    document.getElementById("share-link").value = link;
+  }
 
-      document.getElementById("create-bet").classList.add("hidden");
-      document.getElementById("bet-info").classList.remove("hidden");
+  function acceptBet() {
+    const updates = {
+      nameB: document.getElementById("nameB").value,
+      termsB: document.getElementById("termsB").value,
+      addrB: document.getElementById("addrB").value,
+      accepted: true
+    };
+    update(dbRef, updates);
+    currentUser = updates.nameB;
+  }
 
-      document.getElementById("d-nameA").textContent = bet.nameA;
-      document.getElementById("d-terms").textContent = bet.terms;
-      document.getElementById("d-sats").textContent = bet.sats;
-      document.getElementById("d-addrA").textContent = bet.addrA;
-
-      const link = window.location.origin + window.location.pathname + "?bet=" + betId;
-      document.getElementById("share-link").value = link;
-    }
-
-    function acceptBet() {
-      dbRef.update({
-        nameB: document.getElementById("nameB").value,
-        termsB: document.getElementById("termsB").value,
-        addrB: document.getElementById("addrB").value,
-        accepted: true
-      });
-      currentUser = document.getElementById("nameB").value;
-    }
-
-    function iWon() {
-      dbRef.once("value").then(snap => {
-        const bet = snap.val();
-        const winnerAddr = (currentUser === bet.nameA) ? bet.addrA : bet.addrB;
-        dbRef.update({
-          winner: currentUser,
-          winnerAddr: winnerAddr,
-          finishedAt: Date.now()
-        });
-      });
-    }
-
-    function iLost() {
-      dbRef.once("value").then(snap => {
-        const bet = snap.val();
-        const winner = (currentUser === bet.nameA) ? bet.nameB : bet.nameA;
-        const winnerAddr = (currentUser === bet.nameA) ? bet.addrB : bet.addrA;
-        dbRef.update({
-          winner: winner,
-          winnerAddr: winnerAddr,
-          finishedAt: Date.now()
-        });
-      });
-    }
-
-    function copyLink() {
-      const linkInput = document.getElementById("share-link");
-      linkInput.select();
-      linkInput.setSelectionRange(0, 99999);
-      navigator.clipboard.writeText(linkInput.value).then(() => {
-        alert("Link copied!");
-      });
-    }
-
-    function showWinner(bet) {
-      const msg = document.getElementById("winner-message");
-      msg.classList.remove("hidden");
-      msg.textContent =
-        `🏆 Winner: ${bet.winner}! Receive ${bet.sats} sats at: ${bet.winnerAddr}`;
-    }
-
-    dbRef.on("value", snap => {
+  function iWon() {
+    get(dbRef).then(snap => {
       const bet = snap.val();
-      if (!bet) return;
-
-      // Clear finished bets after 24 hours
-      if (bet.finishedAt && (Date.now() - bet.finishedAt > 24 * 60 * 60 * 1000)) {
-        dbRef.remove();
-        location.reload();
-        return;
-      }
-
-      // Show creator info to B
-      if (!bet.accepted && bet.nameA) {
-        document.getElementById("create-bet").classList.add("hidden");
-        document.getElementById("accept-bet").classList.remove("hidden");
-        document.getElementById("b-nameA").textContent = bet.nameA;
-        document.getElementById("b-addrA").textContent = bet.addrA;
-        document.getElementById("b-terms").textContent = bet.terms;
-        document.getElementById("b-sats").textContent = bet.sats;
-      }
-
-      if (bet.accepted && !bet.winner) {
-        document.getElementById("accept-bet").classList.add("hidden");
-        document.getElementById("outcome-section").classList.remove("hidden");
-      }
-
-      if (bet.winner) showWinner(bet);
+      const winnerAddr = (currentUser === bet.nameA) ? bet.addrA : bet.addrB;
+      update(dbRef, {
+        winner: currentUser,
+        winnerAddr: winnerAddr,
+        finishedAt: Date.now()
+      });
     });
+  }
 
-    document.getElementById("btn-won").addEventListener("click", iWon);
-    document.getElementById("btn-lost").addEventListener("click", iLost);
-  </script>
+  function iLost() {
+    get(dbRef).then(snap => {
+      const bet = snap.val();
+      const winner = (currentUser === bet.nameA) ? bet.nameB : bet.nameA;
+      const winnerAddr = (currentUser === bet.nameA) ? bet.addrB : bet.addrA;
+      update(dbRef, {
+        winner: winner,
+        winnerAddr: winnerAddr,
+        finishedAt: Date.now()
+      });
+    });
+  }
+
+  function copyLink() {
+    const linkInput = document.getElementById("share-link");
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(linkInput.value).then(() => {
+      alert("Link copied!");
+    });
+  }
+
+  function showWinner(bet) {
+    const msg = document.getElementById("winner-message");
+    msg.classList.remove("hidden");
+    msg.textContent =
+      `🏆 Winner: ${bet.winner}! Receive ${bet.sats} sats at: ${bet.winnerAddr}`;
+  }
+
+  onValue(dbRef, snap => {
+    const bet = snap.val();
+    if (!bet) return;
+
+    // Clear finished bets after 24 hours
+    if (bet.finishedAt && (Date.now() - bet.finishedAt > 24 * 60 * 60 * 1000)) {
+      set(dbRef, null);
+      location.reload();
+      return;
+    }
+
+    // Show creator info to B
+    if (!bet.accepted && bet.nameA) {
+      document.getElementById("create-bet").classList.add("hidden");
+      document.getElementById("accept-bet").classList.remove("hidden");
+      document.getElementById("b-nameA").textContent = bet.nameA;
+      document.getElementById("b-addrA").textContent = bet.addrA;
+      document.getElementById("b-terms").textContent = bet.terms;
+      document.getElementById("b-sats").textContent = bet.sats;
+    }
+
+    if (bet.accepted && !bet.winner) {
+      document.getElementById("accept-bet").classList.add("hidden");
+      document.getElementById("outcome-section").classList.remove("hidden");
+    }
+
+    if (bet.winner) showWinner(bet);
+  });
+
+  document.getElementById("btn-won").addEventListener("click", iWon);
+  document.getElementById("btn-lost").addEventListener("click", iLost);
+</script>
 </body>
 </html>
